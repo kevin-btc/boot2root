@@ -10,12 +10,6 @@
 /casper/vmlinuz file=/cdrom/preseed/custom.seed boot=casper initrd=/casper/initrd.gz "quiet splash --"
 ```
 
-####  "quiet splash --" by init=/bin/bash
-
-```
-/casper/vmlinuz file=/cdrom/preseed/custom.seed boot=casper initrd=/casper/initrd.gz init=/bin/bash
-```
-
 #### Launch the VM and flood the ESC key
 
 It should show 
@@ -23,7 +17,7 @@ It should show
 aborted. boot : 
 ```
 
-#### Now write the modified command to launch bash on boot
+#### Now write the modified command to launch bash on boot and replace "quiet splash --" by init=/bin/bash
 
 ```
 /casper/vmlinuz file=/cdrom/preseed/custom.seed boot=casper initrd=/casper/initrd.gz init=/bin/bash
