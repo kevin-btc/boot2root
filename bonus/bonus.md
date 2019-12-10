@@ -17,7 +17,7 @@ It should show
 aborted. boot : 
 ```
 
-#### Now write the modified command to launch bash on boot and replace "quiet splash --" by init=/bin/bash
+#### Now write the boot command and replace "quiet splash --" by "init=/bin/bash" to launch bash on boot 
 
 ```
 /casper/vmlinuz file=/cdrom/preseed/custom.seed boot=casper initrd=/casper/initrd.gz init=/bin/bash
