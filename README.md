@@ -101,3 +101,5 @@ uid=1005(zaz) gid=1005(zaz) euid=0(root) groups=0(root),1005(zaz)
 We are now root
 
 ![shellcode](https://github.com/42aroger/boot2root/blob/master/img/rooted.png?raw=true)
+
+Greetings to [hackndo](https://beta.hackndo.com/retour-a-la-libc/)
