@@ -8,7 +8,8 @@ root a iso using multiple vulnerabilities
 
 ```
 ./exploit_me `printf 'A%.0s' {1..140}`
-result
+```
+```
 zaz@BornToSecHackMe:~$ ./exploit_me `printf 'A%.0s' {1..140}`
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 Illegal instruction (core dumped)
