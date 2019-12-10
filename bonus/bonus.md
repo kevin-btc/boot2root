@@ -16,7 +16,7 @@
 /casper/vmlinuz file=/cdrom/preseed/custom.seed boot=casper initrd=/casper/initrd.gz init=/bin/bash
 ```
 
-#### Launche the VM and flood the ESC key
+#### Launch the VM and flood the ESC key
 
 It should show 
 ```
