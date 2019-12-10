@@ -1,5 +1,3 @@
-Bonus
-
 ### Modify boot
 
 #### Mount iso
