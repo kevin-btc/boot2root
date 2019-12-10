@@ -108,8 +108,8 @@ SELECT "<?php $out = array();exec($_GET[\"cmd\"], $out);foreach($out as $line) {
     So the answer is 9.  
 7. The fifth level you find that you need to input 5 characters which, after being AND 0xf and used as index in the array in the screenshot, give the word "giants". (e.g. "g" from "giants" is position 15 in the array, which you can get after xxxx1111 &AND 0xf. The only letter with xxxx0000 is "o")  
     <img src="https://github.com/42aroger/boot2root/blob/master/img/bomb_phase_5.png?raw=true"
-     title="Bomb Phase 5" width="400">
-    Following this logic, the outcome is opekmq.  
+     title="Bomb Phase 5" width="400">  
+    Following this logic, the outcome is "opekmq".  
 8. The last level (6) has a pretty hefty function with a bunch of operations, but reading the first few, you can deduce that you need 6 non-repeating numbers (never the same number twice), between 1 and 6. With the hint, you also know that the second number is "2". So after that you can feed all the possible sequences to the function until one passes the tests. The winner is "4 2 6 3 1 5".
 9. Following the instructions, you must concatenate all the answers without spaces to form the password. But do not forget to [swap len-1 and len-2 character](https://stackoverflow.com/c/42network/questions/664).  
 10. The password for Thor is then: "Publicspeakingisveryeasy.126241207201b2149opekmq426135"
