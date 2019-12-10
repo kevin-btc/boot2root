@@ -20,7 +20,7 @@ nmap 10.13.0.132                // to get open ports (notably 80 http and 443 ht
 #### Get access to forum and get email
 
 1. `dirb https://10.13.0.132` shows that there are directories on the server named `forum` `phpmyadmin` and `webmail`  
-2. Go to `htttps://10.13.0.132/forum/` and open the thread "Problemes login". Inside find failed attempt to login using what looks like a password (!q\]Ej?*5K5cy*AJ) instead of username, followed by successful login of user lmezard.  
+2. Go to `https://10.13.0.132/forum/` and open the thread "Problemes login". Inside find failed attempt to login using what looks like a password (!q\]Ej?*5K5cy*AJ) instead of username, followed by successful login of user lmezard.  
 4. Then login the forums with credentials, and find lmezard's email address (`laurie@borntosec.net`).  
 
 #### Access webmail and get DB Access
